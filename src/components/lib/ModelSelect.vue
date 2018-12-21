@@ -3,12 +3,13 @@
        :class="{ 'active visible':showMenu, 'error': isError, 'disabled': isDisabled }"
        @click="openOptions"
        @focus="openOptions">
-    <i class="dropdown icon"></i>
-    <input class="search"
+    <i class="search icon"></i>
+    <input v-if="debounce" class="search"
+           v-debounce="debounce"
            autocomplete="off"
+           id="asdasd"
            tabindex="0"
-           :value="searchText"
-           @input="searchText = $event.target.value"
+           v-model.lazy="searchText"
            ref="input"
            @focus.prevent="openOptions"
            @keyup.esc="closeOptions"
@@ -19,9 +20,25 @@
            @keyup.enter.prevent="enterItem"
            @keydown.delete="deleteTextOrItem"
     />
-    <div class="text"
+    <input v-else class="search"
+           autocomplete="off"
+           tabindex="0"
+           :value="searchText"
+           @input="searchText = $event.target.value"
+           ref="input"
+           @focus.prevent="openOptions"
+           @keyup.esc="closeOptions"
+           @blur="blurInput"
+           @keydown="inputText=null"
+           @keydown.up="prevItem"
+           @keydown.down="nextItem"
+           @keydown.enter.prevent=""
+           @keyup.enter.prevent="enterItem"
+           @keydown.delete="deleteTextOrItem"
+    />
+    <!-- <div class="text"
          :class="textClass" :data-vss-custom-attr="searchTextCustomAttr">{{inputText}}
-    </div>
+    </div> -->
     <div class="menu"
          ref="menu"
          @mousedown.prevent
@@ -29,7 +46,7 @@
          :style="menuStyle"
          tabindex="-1">
       <template v-for="(option, idx) in filteredOptions">
-        <div class="item"
+        <div :key="idx" class="item"
              :class="{ 'selected': option.selected, 'current': pointer === idx }"
              :data-vss-custom-attr="customAttrs[idx] ? customAttrs[idx] : ''"
              @click.stop="selectItem(option)"
@@ -45,13 +62,14 @@
 <script>
   import common from './common'
   import { baseMixin, commonMixin, optionAwareMixin } from './mixins'
-
+  import debounce from './debounce.js'
   export default {
     mixins: [baseMixin, commonMixin, optionAwareMixin],
     props: {
       value: {
         type: [String, Number, Object, Boolean]
-      }
+      },
+      debounce: Number
     },
     data () {
       return {
@@ -189,7 +207,8 @@
           return value
         }
       }
-    }
+    },
+    directives: { debounce }
   }
 </script>
 

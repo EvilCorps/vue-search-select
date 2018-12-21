@@ -13,7 +13,8 @@
           isError: this.isError,
           isDisabled: this.isDisabled,
           placeholder: this.placeholder,
-          filterPredicate: this.filterPredicate
+          filterPredicate: this.filterPredicate,
+          debounce: this.debounce
         },
         on: {
           input: this.onInput,
@@ -37,7 +38,8 @@
       /* null also object */
       value: {
         type: [String, Number, Object, Boolean]
-      }
+      },
+      debounce: Number
     },
     computed: {
       options () {

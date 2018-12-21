@@ -4,7 +4,9 @@
     <div class="flexbox">
       <div class="flex-content">
         <div>
-          <model-list-select :list="countries"
+          <model-list-select
+                            :debounce="1000" 
+                            :list="countries"
                              option-value="code"
                              option-text="name"
                              v-model="selectedCountry"
